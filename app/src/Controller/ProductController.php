@@ -7,17 +7,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
-use App\Entity\Product;
+use App\ResponseModel\ProductResponse;
 
 class ProductController extends AbstractController
 {
     /**
      * @OA\Response(
      *     response=200,
-     *     description="Returns the rewards of an user",
+     *     description="Returns a list of products with its original price and discounted price (if it has any applicable discount)",
      *     @OA\JsonContent(
      *        type="array",
-     *        @OA\Items(ref=@Model(type=Product::class, groups={"full"}))
+     *        @OA\Items(ref=@Model(type=ProductResponse::class, groups={"full"}))
      *     )
      * )
      * @OA\Parameter(
