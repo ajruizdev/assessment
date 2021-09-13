@@ -1,0 +1,9 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: My Theresa Assessment
+            description: mytheresa Promotions Test
+            version: 1.0.0
+    areas: # to filter documented areas
+        path_patterns:
+            - ^/(?!_error|api/doc$)([a-zA-Z0-9])+([/|-][a-zA-Z0-9]+)* # Accepts routes under / except /api/doc
