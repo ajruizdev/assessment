@@ -110,12 +110,12 @@ class Category
         return $this;
     }
 
-    public function getPromotion(): ?int
+    public function getPromotion(): ?Promotion
     {
         return $this->promotion;
     }
 
-    public function setPromotion(int $promotion): self
+    public function setPromotion(Promotion $promotion): self
     {
         $this->promotion = $promotion;
 

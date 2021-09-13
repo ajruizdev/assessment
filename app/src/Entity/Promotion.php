@@ -29,10 +29,10 @@ class Promotion
 
     /**
      * Product constructor.
-     * @param string $discount
+     * @param int $discount
      * @param string $name
      */
-    public function __construct(string $discount, string $name = '')
+    public function __construct(int $discount, string $name = '')
     {
         $this->discount = $discount;
         $this->name = $name;
