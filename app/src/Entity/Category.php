@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -83,6 +84,7 @@ class Category
     /**
      * @return Collection|Product[]
      */
+    #[Ignore]
     public function getProducts(): Collection
     {
         return $this->products;

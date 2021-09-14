@@ -2,12 +2,17 @@
 
 namespace App\Controller;
 
+use App\Discount\Calculator;
+use App\Repository\ProductRepository;
+use App\Response\Model\ProductPrice;
+use App\Response\ProductResponseFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
-use App\ResponseModel\ProductResponse;
+use App\Response\Model\Product as ProductResponse;
 
 class ProductController extends AbstractController
 {
@@ -17,7 +22,7 @@ class ProductController extends AbstractController
      *     description="Returns a list of products with its original price and discounted price (if it has any applicable discount)",
      *     @OA\JsonContent(
      *        type="array",
-     *        @OA\Items(ref=@Model(type=ProductResponse::class, groups={"full"}))
+     *        @OA\Items(ref=@Model(type=ProductResponse::class))
      *     )
      * )
      * @OA\Parameter(
@@ -35,11 +40,17 @@ class ProductController extends AbstractController
      * @OA\Tag(name="Product")
      */
     #[Route('/products', name: 'products_list', methods: ['GET'])]
-    public function list(): Response
+    public function list(Request $request, ProductRepository $productRepository, Calculator $discountCalculator, ProductResponseFactory $responseFactory): Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/ProductController.php',
-        ]);
+        $categoryParamValue = $request->get('category');
+        $priceLessThanParamValue = $request->get('priceLessThan');
+
+        $result = $productRepository->findByCategorySlugAndPriceLessThan($categoryParamValue, $priceLessThanParamValue);
+        $products = [];
+        foreach ($result as $product) {
+            $data = ['priceWithDiscount' => $discountCalculator->getPriceWithDiscount($product), 'discountPercentage' => $discountCalculator->getApplicableDiscountPercentage($product)];
+            $products[] = $responseFactory->create($product, $data);
+        }
+        return $this->json($products);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +20,35 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    // /**
-    //  * @return Product[] Returns an array of Product objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Product[] Returns an array of Product objects
+     */
+    public function findByCategorySlugAndPriceLessThan(string $slug = null, int $priceLessThan = null): array
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('p')
+            ->setMaxResults(5);
 
-    /*
-    public function findOneBySomeField($value): ?Product
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($slug) {
+            $this->addCategorySlugFilter($qb, $slug);
+        }
+
+        if ($priceLessThan) {
+            $this->addPriceLessThanFilter($qb, $priceLessThan);
+        }
+
+        return $qb->getQuery()->getResult();
     }
-    */
+
+    private function addCategorySlugFilter(QueryBuilder $qb, string $slug)
+    {
+        $qb->join('p.category', 'c')
+            ->andWhere('c.slug = :slug')
+            ->setParameter('slug', $slug);
+    }
+
+    private function addPriceLessThanFilter(QueryBuilder $qb, string $price)
+    {
+        $qb->andWhere('p.price <= :price')
+            ->setParameter('price', $price);
+    }
 }
