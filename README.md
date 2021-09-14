@@ -8,10 +8,16 @@ If it fails on the first run, try running it again as the script does not check 
 
 > ./build.sh
 
+If everything is ok the server will listen on port 80 so type
+> http://localhost
+
+and it will be redirected to the api doc on 
+> http://localhost/api/doc
+
 # Running the tests
 
-> docker-compose -f ./build/docker-compose.yml run --rm php bin/console
+> docker-compose -f ./build/docker-compose.yml run --rm php bin/phpunit
 
 or
 
-> cd build && docker-compose run --rm php bin/console
+> cd build && docker-compose run --rm php bin/phpunit
